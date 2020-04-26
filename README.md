@@ -1,2 +1,2 @@
-# vardos
-Writing my own operating system from scratch
+# VardOS
+The most powerful operating system ever created
