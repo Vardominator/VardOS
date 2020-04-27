@@ -5,3 +5,4 @@ The most powerful operating system ever created
 * core kernel
 * global descriptor table
 * ports
+* interrupt descriptor table

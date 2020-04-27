@@ -1,5 +1,6 @@
 #include "types.h"
 #include "gdt.h"
+#include "interrupts.h"
 
 void printf(char* str)
 {
@@ -62,6 +63,12 @@ extern "C" void kernelMain(void* multiboot_structure, uint32_t magicnumber)
     printf("Hello Cruel, Cruel World. --- http://varderes.com");
 
     GlobalDescriptorTable gdt;
+    InterruptManager interrupts(&gdt);
+
+    // We need to first instantiate the hardware before we instantiate the interrupts.
+    
+
+    interrupts.Activate();
 
     while(1);
 }
