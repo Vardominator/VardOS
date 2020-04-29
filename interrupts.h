@@ -1,13 +1,36 @@
-#ifndef __INTERRUPTS_H
-#define __INTERRUPTS_H
 
-#include "types.h"
-#include "port.h"
-#include "gdt.h"
+#ifndef __INTERRUPTMANAGER_H
+#define __INTERRUPTMANAGER_H
 
-class InterruptManager
-{
+    #include "gdt.h"
+    #include "types.h"
+    #include "port.h"
+
+
+    class InterruptManager;
+
+    class InterruptHandler
+    {
     protected:
+        uint8_t interrupt;
+        InterruptManager* interruptManager;
+        // should not be instantiated outside of the manager
+        InterruptHandler(uint8_t interrupt, InterruptManager* interruptManager);
+        ~InterruptHandler();
+    public:
+        virtual uint32_t HandleInterrupt(uint32_t esp);
+    };
+
+
+    class InterruptManager
+    {
+        // allow interrupt manager to instantiate InterruptHandler
+        friend class InterruptHandler;
+
+    protected:
+        static InterruptManager* ActiveInterruptManager;
+        InterruptHandler* handlers[256];
+
         struct GateDescriptor
         {
             uint16_t handlerAddressLowBits;
@@ -15,51 +38,76 @@ class InterruptManager
             uint8_t reserved;
             uint8_t access;
             uint16_t handlerAddressHighBits;
-
-        } __attribute((packed));
+        } __attribute__((packed));
 
         static GateDescriptor interruptDescriptorTable[256];
 
         struct InterruptDescriptorTablePointer
         {
-            // Size of the table.
             uint16_t size;
-            // Adresss of the table.
             uint32_t base;
-        } __attribute((packed));
+        } __attribute__((packed));
 
-        static void SetInterruptDescriptorTableEntry(
-            uint8_t interruptNumber,
-            uint16_t gdt_codeSegmentSelectorOffset,
-            void (*handler)(),
-            uint8_t DescriptorPrivilegeLevel,
-            uint8_t DescriptorType
-        );
+        uint16_t hardwareInterruptOffset;
+        static void SetInterruptDescriptorTableEntry(uint8_t interrupt,
+            uint16_t codeSegmentSelectorOffset, void (*handler)(),
+            uint8_t DescriptorPrivilegeLevel, uint8_t DescriptorType);
 
-        // Ports for communication with Programmable Interrupt Controllers (PICs)
-        Port8BitSlow picMasterCommand;
-        Port8BitSlow picMasterData;
-        Port8BitSlow picSlaveCommand;
-        Port8BitSlow picSlaveData;
-        
+
+        static void InterruptIgnore();
+
+        static void HandleInterruptRequest0x00();
+        static void HandleInterruptRequest0x01();
+        static void HandleInterruptRequest0x02();
+        static void HandleInterruptRequest0x03();
+        static void HandleInterruptRequest0x04();
+        static void HandleInterruptRequest0x05();
+        static void HandleInterruptRequest0x06();
+        static void HandleInterruptRequest0x07();
+        static void HandleInterruptRequest0x08();
+        static void HandleInterruptRequest0x09();
+        static void HandleInterruptRequest0x0A();
+        static void HandleInterruptRequest0x0B();
+        static void HandleInterruptRequest0x0C();
+        static void HandleInterruptRequest0x0D();
+        static void HandleInterruptRequest0x0E();
+        static void HandleInterruptRequest0x0F();
+        static void HandleInterruptRequest0x31();
+
+        static void HandleException0x00();
+        static void HandleException0x01();
+        static void HandleException0x02();
+        static void HandleException0x03();
+        static void HandleException0x04();
+        static void HandleException0x05();
+        static void HandleException0x06();
+        static void HandleException0x07();
+        static void HandleException0x08();
+        static void HandleException0x09();
+        static void HandleException0x0A();
+        static void HandleException0x0B();
+        static void HandleException0x0C();
+        static void HandleException0x0D();
+        static void HandleException0x0E();
+        static void HandleException0x0F();
+        static void HandleException0x10();
+        static void HandleException0x11();
+        static void HandleException0x12();
+        static void HandleException0x13();
+
+        static uint32_t HandleInterrupt(uint8_t interrupt, uint32_t esp);
+        uint32_t DoHandleInterrupt(uint8_t interrupt, uint32_t esp);
+
+        Port8BitSlow programmableInterruptControllerMasterCommandPort;
+        Port8BitSlow programmableInterruptControllerMasterDataPort;
+        Port8BitSlow programmableInterruptControllerSlaveCommandPort;
+        Port8BitSlow programmableInterruptControllerSlaveDataPort;
 
     public:
-        // IDT constructor; Uses the GDT.
-        InterruptManager(GlobalDescriptorTable* gdt);
+        InterruptManager(uint16_t hardwareInterruptOffset, GlobalDescriptorTable* globalDescriptorTable);
         ~InterruptManager();
-
-        // Send interrupts from CPU.
+        uint16_t HardwareInterruptOffset();
         void Activate();
-
-        // name of this interrupt externally: _ZN16InterruptManager16handlerInterruptEhj
-        static uint32_t handleInterrupt(uint8_t interruptNumber, uint32_t esp);
-        
-        static void IgnoreInterruptRequest();
-        // timer interupt
-        static void HandleInterruptRequest0x00();
-        // keyboard interrupt
-        static void HandleInterruptRequest0x01();
-
-};
-
+        void Deactivate();
+    };
 #endif
