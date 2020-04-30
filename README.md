@@ -7,3 +7,4 @@ The most powerful operating system ever created
 * ports interface
 * interrupt manager & descriptor table
 * keyboard driver
+* mouse driver
