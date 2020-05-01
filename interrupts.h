@@ -15,7 +15,7 @@
         uint8_t interrupt;
         InterruptManager* interruptManager;
         // should not be instantiated outside of the manager
-        InterruptHandler(uint8_t interrupt, InterruptManager* interruptManager);
+        InterruptHandler(InterruptManager* interruptManager, uint8_t interrupt);
         ~InterruptHandler();
     public:
         virtual uint32_t HandleInterrupt(uint32_t esp);

@@ -5,6 +5,7 @@ The most powerful operating system ever created
 * core kernel
 * global descriptor table
 * ports interface
-* interrupt manager & descriptor table
-* keyboard driver
-* mouse driver
+* interrupt manager & interrupt descriptor table
+* device drivers
+    * keyboard driver
+    * mouse driver
