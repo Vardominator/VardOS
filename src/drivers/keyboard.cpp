@@ -1,4 +1,8 @@
-#include "keyboard.h"
+#include <drivers/keyboard.h>
+
+using namespace vardos::common;
+using namespace vardos::drivers;
+using namespace vardos::hardwarecommunication;
 
 void printf(char*);
 void printfHex(uint8_t);

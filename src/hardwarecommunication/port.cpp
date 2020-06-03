@@ -1,4 +1,7 @@
-#include "port.h"
+#include <hardwarecommunication/port.h>
+
+using namespace vardos::common;
+using namespace vardos::hardwarecommunication;
 
 Port::Port(uint16_t portnumber)
 {

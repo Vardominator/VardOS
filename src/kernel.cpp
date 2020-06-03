@@ -1,9 +1,14 @@
-#include "types.h"
-#include "gdt.h"
-#include "interrupts.h"
-#include "driver.h"
-#include "keyboard.h"
-#include "mouse.h"
+#include <common/types.h>
+#include <gdt.h>
+#include <hardwarecommunication/interrupts.h>
+#include <drivers/driver.h>
+#include <drivers/keyboard.h>
+#include <drivers/mouse.h>
+
+using namespace vardos;
+using namespace vardos::common;
+using namespace vardos::drivers;
+using namespace vardos::hardwarecommunication;
 
 void printf(char* str)
 {
@@ -68,10 +73,6 @@ class MouseToConsole : public MouseEventHandler
     int8_t x, y;
 public:
     MouseToConsole()
-    {
-    }
-    
-    virtual void OnActivate()
     {
         // Initialize cursor to center of the screen
         uint16_t* VideoMemory = (uint16_t*)0xb8000;

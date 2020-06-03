@@ -1,4 +1,8 @@
-#include "mouse.h"
+#include <drivers/mouse.h>
+
+using namespace vardos::drivers;
+using namespace vardos::common;
+using namespace vardos::hardwarecommunication;
 
 void printf(char*);
 

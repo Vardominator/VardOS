@@ -1,4 +1,7 @@
-#include "interrupts.h"
+#include <hardwarecommunication/interrupts.h>
+
+using namespace vardos::common;
+using namespace vardos::hardwarecommunication;
 
 void printf(char* str);
 void printfHex(uint8_t key);
@@ -33,8 +36,6 @@ InterruptManager* InterruptManager::ActiveInterruptManager = 0;
 void InterruptManager::SetInterruptDescriptorTableEntry(uint8_t interrupt,
     uint16_t CodeSegment, void (*handler)(), uint8_t DescriptorPrivilegeLevel, uint8_t DescriptorType)
 {
-    // address of pointer to code segment
-    // and address of the handler
     interruptDescriptorTable[interrupt].handlerAddressLowBits = ((uint32_t) handler) & 0xFFFF;
     interruptDescriptorTable[interrupt].handlerAddressHighBits = (((uint32_t) handler) >> 16) & 0xFFFF;
     interruptDescriptorTable[interrupt].gdt_codeSegmentSelector = CodeSegment;
